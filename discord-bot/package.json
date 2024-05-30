@@ -1,0 +1,26 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/src/index.js",
+  "scripts": {
+    "clean": "del /s /q dist",
+    "start": "cross-env NODE_ENV=production node .",
+    "build": "npm run clean && tsc --build",
+    "dev": "cross-env NODE_ENV=development tsx watch src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^20.12.12",
+    "cross-env": "^7.0.3",
+    "tsx": "^4.11.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.2",
+    "dotenv": "^16.4.5",
+    "glob": "^10.4.1"
+  }
+}
