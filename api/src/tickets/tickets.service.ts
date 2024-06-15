@@ -18,6 +18,25 @@ export class TicketsService {
     return ticket;
   }
 
+  async deleteTicketById(id: string) {
+    const deletedTicket = await this.ticketRepository.findByIdAndDelete(id);
+    return deletedTicket;
+  }
+
+  async updateTicketById(id: string, dto: CreateTicketDto) {
+    const updatedTicket = await this.ticketRepository.findByIdAndUpdate(
+      id,
+      dto,
+      { new: true },
+    );
+    return updatedTicket;
+  }
+
+  async getTicketById(id: string) {
+    const ticket = await this.ticketRepository.findById(id);
+    return ticket;
+  }
+
   async getAllTickets() {
     const tickets = await this.ticketRepository.find();
     return tickets;
