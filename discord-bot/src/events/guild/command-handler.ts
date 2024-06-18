@@ -14,7 +14,7 @@ export default class CommandHandler extends Event {
   }
 
   async execute(interaction: ChatInputCommandInteraction) {
-    if (!interaction.isChatInputCommand) return;
+    if (!interaction.isChatInputCommand()) return;
 
     const command: Command = this.client.commands.get(interaction.commandName)!;
 
