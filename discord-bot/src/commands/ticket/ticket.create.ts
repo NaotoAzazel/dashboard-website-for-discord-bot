@@ -8,7 +8,6 @@ import {
 import { CustomClient } from "../../classes/client/client.class";
 import { SubCommand } from "../../classes/slash-commands/sub-command.class";
 
-import * as api from "../../api";
 import { TicketType } from "../../api/tickets/dto/tickets.dto";
 
 import { logError } from "../../libs/console-logger";
@@ -21,15 +20,6 @@ export default class TicketCreate extends SubCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction) {
-    this.client.authService.ckeckTokenAndRefreshIfNeeded();
-
-    if (!this.client.authService.isApiAuth()) {
-      return await interaction.reply({
-        content: "Ошибка создания тикета. Попробуйте позже",
-        ephemeral: true,
-      });
-    }
-
     const type = interaction.options.getString("type") as TicketType;
     const description =
       interaction.options.getString("description") || "Default description";
@@ -54,15 +44,12 @@ export default class TicketCreate extends SubCommand {
         throw new Error("Fail to create channel in temp storage");
       }
 
-      const createdTicket = await api.tickets.createTicket(
-        {
-          channelId: createdChannel.id,
-          ticketOwnerId: user.id,
-          description,
-          type,
-        },
-        this.client.authService.getApiToken(),
-      );
+      const createdTicket = await this.client.apiService.createTicket({
+        channelId: createdChannel.id,
+        ticketOwnerId: user.id,
+        description,
+        type,
+      });
 
       if (!createdTicket) {
         throw new Error("Fail to create ticket");
@@ -101,9 +88,16 @@ export default class TicketCreate extends SubCommand {
           { name: "Описание", value: createdTicket.description },
         );
 
-      await (createdChannel as TextBasedChannel).send({ embeds: [embed] });
+      await (createdChannel as TextBasedChannel).send({
+        embeds: [embed],
+      });
     } catch (error) {
       logError("Error when trying to create a ticket:", error);
+
+      await interaction.reply({
+        content: `Ошибка создания тикета. Попробуйте позже.`,
+        ephemeral: true,
+      });
     }
   }
 }

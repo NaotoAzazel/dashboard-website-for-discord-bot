@@ -8,11 +8,14 @@ import { Handler } from "../handler/handler.class";
 import { Command } from "../slash-commands/command.class";
 import { SubCommand } from "../slash-commands/sub-command.class";
 
+import { IAuthService } from "../../service/auth/auth.interface";
 import { AuthService } from "../../service/auth/auth.service";
+import { IApiService } from "../../service/api/api.interface";
+import { ApiService } from "../../service/api/api.service";
+
 import { ILoginResponseDto } from "../../api/auth/dto/auth.dto";
 
 import { logError } from "../../libs/console-logger";
-import { IAuthService } from "../../service/auth/auth.interface";
 
 export class CustomClient extends Client implements ICustomClient {
   handler: Handler;
@@ -22,7 +25,9 @@ export class CustomClient extends Client implements ICustomClient {
   subCommands: Collection<string, SubCommand>;
 
   apiToken: ILoginResponseDto | null = null;
+
   authService: IAuthService;
+  apiService: IApiService;
 
   constructor(private readonly configService: IConfigService) {
     super({
@@ -36,27 +41,17 @@ export class CustomClient extends Client implements ICustomClient {
     this.subCommands = new Collection();
 
     this.authService = new AuthService(this);
+    this.apiService = new ApiService(this);
   }
 
   async init() {
     this.loadHandlers();
 
-    await this.reciveApiToken();
+    await this.apiService.receiveAndSetApiToken();
 
     this.login(this.config.get("BOT_TOKEN")).catch((error) =>
       logError("Error while bot starting:", error),
     );
-  }
-
-  async reciveApiToken() {
-    const apiToken = await AuthService.login({
-      password: this.config.get("PASSWORD"),
-    });
-
-    if (apiToken) {
-      this.authService.setApiToken(apiToken);
-      console.log("Api token successfully get");
-    }
   }
 
   loadHandlers(): void {
