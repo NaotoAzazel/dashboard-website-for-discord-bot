@@ -3,6 +3,9 @@ import {
   PermissionsBitField,
   TextBasedChannel,
   EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } from "discord.js";
 
 import { CustomClient } from "../../classes/client/client.class";
@@ -49,6 +52,7 @@ export default class TicketCreate extends SubCommand {
         ticketOwnerId: user.id,
         description,
         type,
+        isClose: false,
       });
 
       if (!createdTicket) {
@@ -88,8 +92,18 @@ export default class TicketCreate extends SubCommand {
           { name: "Описание", value: createdTicket.description },
         );
 
+      const closeTicketButton = new ButtonBuilder()
+        .setCustomId(`close-ticket-${createdTicket._id}`)
+        .setLabel("Закрыть тикет")
+        .setStyle(ButtonStyle.Danger);
+
+      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        closeTicketButton,
+      );
+
       await (createdChannel as TextBasedChannel).send({
         embeds: [embed],
+        components: [row],
       });
     } catch (error) {
       logError("Error when trying to create a ticket:", error);
