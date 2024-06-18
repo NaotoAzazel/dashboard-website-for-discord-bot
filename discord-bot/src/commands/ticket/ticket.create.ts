@@ -49,6 +49,7 @@ export default class TicketCreate extends SubCommand {
         ticketOwnerId: user.id,
         description,
         type,
+        isClose: false,
       });
 
       if (!createdTicket) {
