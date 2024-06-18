@@ -3,5 +3,12 @@ export function logError(message: string, error: unknown) {
   const stackArray = stack.split("\n");
   const callerInfo = stackArray[2] || "";
 
-  console.error(`[Error] ${callerInfo.trim()} - ${message}`, error);
+  const isDevelopmentMode = process.env.NODE_ENV === "development";
+
+  console.error(
+    isDevelopmentMode
+      ? `[Error] ${callerInfo.trim()} - ${message}`
+      : `[Error] ${message}`,
+    error,
+  );
 }
