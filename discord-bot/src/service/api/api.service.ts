@@ -31,12 +31,12 @@ export class ApiService implements IApiService {
       }
     }
 
-    const apiToken = this._client.authService.getApiToken() as string;
+    const apiToken = this._client.authService.getApiToken();
     if (!apiToken) {
-      return false;
+      this.ensureApiTokenIsValid();
     }
 
-    const isApiTokenExpired = this.isApiTokenExpired(apiToken);
+    const isApiTokenExpired = this.isApiTokenExpired(apiToken as string);
 
     if (isApiTokenExpired) {
       const newToken = await this.refreshApiToken();
@@ -48,7 +48,7 @@ export class ApiService implements IApiService {
       return true;
     }
 
-    return true;
+    return false;
   }
 
   private isApiTokenExpired(token: string) {
@@ -65,6 +65,10 @@ export class ApiService implements IApiService {
 
   private isApiAuthorized(): boolean {
     const apiToken = this._client.authService.getApiToken();
+    if (!apiToken) return false;
+
+    const isApiTokenExpired = this.isApiTokenExpired(apiToken);
+
     return !!apiToken;
   }
 
@@ -105,7 +109,6 @@ export class ApiService implements IApiService {
   async createTicket(values: CreateTicketFormDto): Promise<Ticket | null> {
     try {
       const isApiTokenValid = await this.ensureApiTokenIsValid();
-
       if (!isApiTokenValid) {
         return null;
       }
