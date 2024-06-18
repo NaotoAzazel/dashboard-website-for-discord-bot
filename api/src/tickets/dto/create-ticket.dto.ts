@@ -1,5 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsIn, IsNotEmpty, IsNumberString, IsString } from "class-validator";
+import {
+  IsBoolean,
+  IsIn,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from "class-validator";
 
 export class CreateTicketDto {
   @ApiProperty({
@@ -40,4 +47,12 @@ export class CreateTicketDto {
     message: "Must be one of: Неполадка, Жалоба, Технический вопрос",
   })
   readonly type: "Неполадка" | "Жалоба" | "Технический вопрос";
+
+  @ApiProperty({
+    example: true,
+    description: "Закрыт ли тикет",
+  })
+  @IsOptional()
+  @IsBoolean({ message: "Must be a boolean" })
+  isClose: boolean;
 }

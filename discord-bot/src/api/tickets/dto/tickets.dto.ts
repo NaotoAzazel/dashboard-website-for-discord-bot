@@ -6,6 +6,7 @@ export type Ticket = {
   channelId: string;
   description: string;
   type: TicketType;
+  isClose: boolean;
 };
 
 export interface CreateTicketFormDto extends Ticket {}

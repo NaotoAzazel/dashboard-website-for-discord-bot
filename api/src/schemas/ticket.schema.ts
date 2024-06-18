@@ -28,6 +28,13 @@ export class Ticket {
   })
   @Prop()
   type: "Неполадка" | "Жалоба" | "Технический вопрос";
+
+  @ApiProperty({
+    example: true,
+    description: "Закрыт ли тикет",
+  })
+  @Prop({ default: false })
+  isClose: boolean;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);
