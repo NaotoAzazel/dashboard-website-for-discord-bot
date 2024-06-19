@@ -10,8 +10,6 @@ import { SubCommand } from "../../classes/slash-commands/sub-command.class";
 
 import { TicketType } from "../../api/tickets/dto/tickets.dto";
 
-import { logError } from "../../libs/console-logger";
-
 export default class TicketCreate extends SubCommand {
   constructor(client: CustomClient) {
     super(client, {
@@ -93,7 +91,7 @@ export default class TicketCreate extends SubCommand {
         embeds: [embed],
       });
     } catch (error) {
-      logError("Error when trying to create a ticket:", error);
+      console.error("Error when trying to create a ticket:", error);
 
       await interaction.reply({
         content: `Ошибка создания тикета. Попробуйте позже.`,

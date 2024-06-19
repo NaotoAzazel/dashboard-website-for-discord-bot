@@ -3,8 +3,6 @@ import * as api from "../../api/";
 
 import { ICustomClient } from "../../classes/client/client.interface";
 
-import { logError } from "../../libs/console-logger";
-
 import { AuthService } from "../auth/auth.service";
 
 import { IApiService } from "./api.interface";
@@ -58,7 +56,7 @@ export class ApiService implements IApiService {
 
       return decode.exp < currentTime;
     } catch (error) {
-      logError("Failed to decode token:", error);
+      console.error("Failed to decode token", error);
       return true;
     }
   }
@@ -80,7 +78,24 @@ export class ApiService implements IApiService {
 
       return newToken.token;
     } catch (error) {
-      logError("Error while trying to update api token:", error);
+      console.error("Error while trying to update api token", error);
+      return null;
+    }
+  }
+
+  private async executeWithValidToken<T>(
+    action: (apiToken: string) => Promise<T>,
+  ): Promise<T | null> {
+    try {
+      const isApiTokenValid = await this.ensureApiTokenIsValid();
+      if (!isApiTokenValid) {
+        return null;
+      }
+
+      const apiToken = this._client.authService.getApiToken() as string;
+      return await action(apiToken);
+    } catch (error) {
+      console.error("Error while executing action with valid token", error);
       return null;
     }
   }
@@ -98,28 +113,13 @@ export class ApiService implements IApiService {
       this._client.authService.setApiToken(apiToken);
       console.log("Api token successfully set");
     } catch (error) {
-      logError("Error while trying to receive api token:", error);
+      console.error("Error while trying to receive api token", error);
     }
   }
 
   async createTicket(values: CreateTicketFormDto): Promise<Ticket | null> {
-    try {
-      const isApiTokenValid = await this.ensureApiTokenIsValid();
-      if (!isApiTokenValid) {
-        return null;
-      }
-
-      const apiToken = this._client.authService.getApiToken();
-      const createdTicket = await api.tickets.createTicket(values, apiToken);
-
-      if (!createdTicket) {
-        throw new Error("Fail to create ticket");
-      }
-
-      return createdTicket;
-    } catch (error) {
-      logError("Error while trying to create ticket:", error);
-      return null;
-    }
+    return this.executeWithValidToken((apiToken) =>
+      api.tickets.createTicket(values, apiToken),
+    );
   }
 }

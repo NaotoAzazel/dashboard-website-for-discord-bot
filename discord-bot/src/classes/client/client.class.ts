@@ -15,7 +15,7 @@ import { ApiService } from "../../service/api/api.service";
 
 import { ILoginResponseDto } from "../../api/auth/dto/auth.dto";
 
-import { logError } from "../../libs/console-logger";
+import "../../libs/console";
 
 export class CustomClient extends Client implements ICustomClient {
   handler: Handler;
@@ -50,7 +50,7 @@ export class CustomClient extends Client implements ICustomClient {
     await this.apiService.receiveAndSetApiToken();
 
     this.login(this.config.get("BOT_TOKEN")).catch((error) =>
-      logError("Error while bot starting:", error),
+      console.error("Error while bot starting:", error),
     );
   }
 
