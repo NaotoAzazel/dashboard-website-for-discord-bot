@@ -4,8 +4,7 @@ const originalLog = console.log;
 const originalError = console.error;
 const originalWarn = console.warn;
 
-function getFormattedTime(): string {
-  const localTime = new Date();
+function getFormattedTime(localTime: Date): string {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "2-digit",
@@ -25,16 +24,17 @@ function getCallerInfo(): string {
   return callerMatch ? callerMatch[1] : "unknown";
 }
 
-const initialText = chalk.green(
-  `[BOT] ${process.pid}   - ${getFormattedTime()}     `,
-);
+const initialText = (localTime: Date) =>
+  chalk.green(`[BOT] ${process.pid}   - ${getFormattedTime(localTime)}     `);
 
 export function logError(...args: unknown[]) {
   const errorText = chalk.red("ERROR ");
   const errorMessage = chalk.green(args.map((arg) => String(arg)).join(" "));
   const callerInfo = chalk.yellow(`[${getCallerInfo()}] `);
 
-  originalError(initialText + errorText + callerInfo + errorMessage);
+  const localTime = new Date();
+
+  originalError(initialText(localTime) + errorText + callerInfo + errorMessage);
 }
 
 export function logMessage(...args: unknown[]) {
@@ -42,7 +42,9 @@ export function logMessage(...args: unknown[]) {
   const logMessage = chalk.green(args.map((arg) => String(arg)).join(" "));
   const callerInfo = chalk.yellow(`[${getCallerInfo()}] `);
 
-  originalLog(initialText + logText + callerInfo + logMessage);
+  const localTime = new Date();
+
+  originalLog(initialText(localTime) + logText + callerInfo + logMessage);
 }
 
 export function logWarn(...args: unknown[]) {
@@ -50,5 +52,7 @@ export function logWarn(...args: unknown[]) {
   const warnMessage = chalk.green(args.map((arg) => String(arg)).join(" "));
   const callerInfo = chalk.yellow(`[${getCallerInfo()}] `);
 
-  originalWarn(initialText + warnText + callerInfo + warnMessage);
+  const localTime = new Date();
+
+  originalWarn(initialText(localTime) + warnText + callerInfo + warnMessage);
 }
