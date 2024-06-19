@@ -17,15 +17,17 @@ import { CreateTicketDto } from "./dto/create-ticket.dto";
 import { Ticket } from "src/schemas/ticket.schema";
 
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { UpdateTicketDto } from "./dto/update-ticket.dto";
 
 @ApiTags("Тикеты")
 @Controller("tickets")
 export class TicketsController {
-  constructor(private ticketService: TicketsService) {}
+  constructor(private readonly ticketService: TicketsService) {}
 
   @ApiOperation({ summary: "Создание тикета" })
   @ApiResponse({ status: 200, type: Ticket })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   @Post()
   create(@Body() ticketDto: CreateTicketDto) {
     return this.ticketService.createTicket(ticketDto);
@@ -42,8 +44,9 @@ export class TicketsController {
   @ApiOperation({ summary: "Обновление тикета" })
   @ApiResponse({ status: 200, type: Ticket })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   @Put(":id")
-  update(@Param("id") id: string, @Body() ticketDto: CreateTicketDto) {
+  update(@Param("id") id: string, @Body() ticketDto: UpdateTicketDto) {
     return this.ticketService.updateTicketById(id, ticketDto);
   }
 

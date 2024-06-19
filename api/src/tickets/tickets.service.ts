@@ -6,6 +6,7 @@ import { Model } from "mongoose";
 import { Ticket } from "src/schemas/ticket.schema";
 
 import { CreateTicketDto } from "./dto/create-ticket.dto";
+import { UpdateTicketDto } from "./dto/update-ticket.dto";
 
 @Injectable()
 export class TicketsService {
@@ -23,7 +24,7 @@ export class TicketsService {
     return deletedTicket;
   }
 
-  async updateTicketById(id: string, dto: CreateTicketDto) {
+  async updateTicketById(id: string, dto: UpdateTicketDto) {
     const updatedTicket = await this.ticketRepository.findByIdAndUpdate(
       id,
       dto,
