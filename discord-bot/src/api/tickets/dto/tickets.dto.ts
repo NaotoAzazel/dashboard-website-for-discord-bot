@@ -10,3 +10,4 @@ export type Ticket = {
 };
 
 export interface CreateTicketFormDto extends Ticket {}
+export type UpdateTicketFormDto = Partial<CreateTicketFormDto>;

@@ -1,4 +1,8 @@
-import { CreateTicketFormDto, Ticket } from "../../api/tickets/dto/tickets.dto";
+import {
+  CreateTicketFormDto,
+  Ticket,
+  UpdateTicketFormDto,
+} from "../../api/tickets/dto/tickets.dto";
 import * as api from "../../api/";
 
 import { ICustomClient } from "../../classes/client/client.interface";
@@ -117,9 +121,24 @@ export class ApiService implements IApiService {
     }
   }
 
+  async getTicketById(id: string): Promise<Ticket | null> {
+    return this.executeWithValidToken((apiToken) =>
+      api.tickets.getTicketById(id, apiToken),
+    );
+  }
+
   async createTicket(values: CreateTicketFormDto): Promise<Ticket | null> {
     return this.executeWithValidToken((apiToken) =>
       api.tickets.createTicket(values, apiToken),
+    );
+  }
+
+  async updateTicketById(
+    id: string,
+    values: UpdateTicketFormDto,
+  ): Promise<Ticket | null> {
+    return this.executeWithValidToken((apiToken) =>
+      api.tickets.updateTicketById(id, values, apiToken),
     );
   }
 }
