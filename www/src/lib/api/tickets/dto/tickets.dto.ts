@@ -4,4 +4,5 @@ export type Ticket = {
   channelId: string;
   description: string;
   type: "Неполадка" | "Жалоба" | "Технический вопрос";
+  isClose: boolean;
 };
