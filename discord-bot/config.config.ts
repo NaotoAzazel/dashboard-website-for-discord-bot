@@ -2,7 +2,8 @@ import { Config } from "./src/types/index";
 
 const config = {
   content: {
-    events: "src/events/**/*.js",
+    websocketEvents: "src/events/websocket/**/*.js",
+    discordEvents: "src/events/discord/**/*.js",
     commands: "src/commands/**/*.js",
   },
 } satisfies Config;

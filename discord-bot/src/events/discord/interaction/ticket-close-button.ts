@@ -1,9 +1,9 @@
 import { Events, Interaction, PermissionsBitField } from "discord.js";
 
-import { CustomClient } from "../../classes/client/client.class";
-import { Event } from "../../classes/events/event.class";
+import { CustomClient } from "../../../classes/client/client.class";
+import { DiscordEvent } from "../../../classes/events/discord/event.class";
 
-export default class TicketCloseEvent extends Event {
+export default class TicketCloseEvent extends DiscordEvent {
   constructor(client: CustomClient) {
     super(client, {
       name: Events.InteractionCreate,

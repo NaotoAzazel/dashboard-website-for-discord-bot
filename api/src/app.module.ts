@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { TicketsModule } from "./tickets/tickets.module";
 import { AuthModule } from "./auth/auth.module";
 import { JwtService } from "@nestjs/jwt";
+import { WebSocketModule } from "./websocket/websocket.module";
 
 @Module({
   controllers: [],
@@ -13,6 +14,7 @@ import { JwtService } from "@nestjs/jwt";
     MongooseModule.forRoot(process.env.MONGO_URL),
     TicketsModule,
     AuthModule,
+    WebSocketModule,
   ],
 })
 export class AppModule {}
