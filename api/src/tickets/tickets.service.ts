@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 
 import { Model } from "mongoose";
@@ -31,6 +31,19 @@ export class TicketsService {
       { new: true },
     );
     return updatedTicket;
+  }
+
+  async closeTicketById(id: string) {
+    const ticket = await this.getTicketById(id);
+
+    if (ticket && ticket.isClose) {
+      throw new BadRequestException("This ticket is already close");
+    }
+
+    const closedTicket = await this.updateTicketById(ticket.id, {
+      isClose: true,
+    });
+    return closedTicket;
   }
 
   async getTicketById(id: string) {

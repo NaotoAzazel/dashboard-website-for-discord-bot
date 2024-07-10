@@ -1,10 +1,10 @@
 import { Collection, Events, REST, Routes } from "discord.js";
 
-import { CustomClient } from "../../classes/client/client.class";
-import { Event } from "../../classes/events/event.class";
-import { Command } from "../../classes/slash-commands/command.class";
+import { CustomClient } from "../../../classes/client/client.class";
+import { DiscordEvent } from "../../../classes/events/discord/event.class";
+import { Command } from "../../../classes/slash-commands/command.class";
 
-export default class Ready extends Event {
+export default class Ready extends DiscordEvent {
   constructor(client: CustomClient) {
     super(client, {
       name: Events.ClientReady,

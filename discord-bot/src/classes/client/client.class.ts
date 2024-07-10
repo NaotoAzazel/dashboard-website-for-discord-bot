@@ -1,3 +1,5 @@
+import "../../libs/console";
+
 import { Client, Collection } from "discord.js";
 
 import { ICustomClient } from "./client.interface";
@@ -12,22 +14,24 @@ import { IAuthService } from "../../service/auth/auth.interface";
 import { AuthService } from "../../service/auth/auth.service";
 import { IApiService } from "../../service/api/api.interface";
 import { ApiService } from "../../service/api/api.service";
-
 import { ILoginResponseDto } from "../../api/auth/dto/auth.dto";
 
-import "../../libs/console";
+import { Socket } from "socket.io-client";
+import { WebsocketService } from "../../service/websocket/websocket.service";
 
 export class CustomClient extends Client implements ICustomClient {
-  handler: Handler;
-  config: IConfigService;
+  private _handler: Handler;
+  public config: IConfigService;
 
-  commands: Collection<string, Command>;
-  subCommands: Collection<string, SubCommand>;
+  public commands: Collection<string, Command>;
+  public subCommands: Collection<string, SubCommand>;
 
-  apiToken: ILoginResponseDto | null = null;
+  public apiToken: ILoginResponseDto | null = null;
 
-  authService: IAuthService;
-  apiService: IApiService;
+  public authService: IAuthService;
+  public apiService: IApiService;
+
+  public websocket: Socket;
 
   constructor(private readonly configService: IConfigService) {
     super({
@@ -35,7 +39,9 @@ export class CustomClient extends Client implements ICustomClient {
     });
 
     this.config = configService;
-    this.handler = new Handler(this);
+
+    this.websocket = WebsocketService.init(this.config.get("BASE_URL"));
+    this._handler = new Handler(this, this.websocket);
 
     this.commands = new Collection();
     this.subCommands = new Collection();
@@ -55,7 +61,8 @@ export class CustomClient extends Client implements ICustomClient {
   }
 
   loadHandlers(): void {
-    this.handler.loadEvents();
-    this.handler.loadSlashCommand();
+    this._handler.loadDiscordEvents();
+    this._handler.loadWebsocketEvents();
+    this._handler.loadSlashCommand();
   }
 }

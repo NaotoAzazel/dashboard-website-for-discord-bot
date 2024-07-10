@@ -1,5 +1,6 @@
 type ContentConfig = {
-  events: string;
+  websocketEvents: string;
+  discordEvents: string;
   commands: string;
 };
 

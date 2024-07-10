@@ -1,4 +1,5 @@
 export interface IHandler {
-  loadEvents(): Promise<void>;
+  loadDiscordEvents(): Promise<void>;
+  loadWebsocketEvents(): Promise<void>;
   loadSlashCommand(): Promise<void>;
 }
